@@ -1,8 +1,8 @@
 # mcp-learning
 
-This folder contains small example scripts that demonstrate using a Multi-Server MCP client
-and LangGraph/LangChain agents. The examples use environment variables (via a `.env` file)
-and expect Node's `npx` to be available for launching the Bright Data MCP process.
+This folder contains a few example scripts that demonstrate using a local or remote MCP server
+and integrating it with Python agents. The examples use environment variables (via a `.env` file)
+when needed.
 
 ## Requirements
 
@@ -14,23 +14,14 @@ and expect Node's `npx` to be available for launching the Bright Data MCP proces
 
 ## Important environment variables
 
-Create a `.env` file in this folder (the examples load it using `python-dotenv`). At minimum set:
+Create a `.env` file in this folder (the examples load it using `python-dotenv`).
 
-- `OPENAI_API_KEY` — API key for OpenAI chat models
-- `BRIGHT_DATA_API_TOKEN` — API token for Bright Data (used by the MCP tool)
-
-Optional (defaults are used in the scripts if not provided):
-
-- `WEB_UNLOCKER_ZONE` — Bright Data web unlocker zone (default: `unblocker`)
-- `BROWSER_ZONE` — Bright Data browser zone (default: `scraping_browser`)
+- `OPENAI_API_KEY` — required if you want examples or the local server's `ask_llm` tool to call OpenAI.
 
 Example `.env`:
 
 ```
 OPENAI_API_KEY=sk-xxx
-BRIGHT_DATA_API_TOKEN=bd_yyy
-WEB_UNLOCKER_ZONE=unblocker
-BROWSER_ZONE=scraping_browser
 ```
 
 ## Setup (PowerShell examples)
@@ -48,41 +39,42 @@ pip install -r requirements.txt
 node --version; npm --version
 ```
 
-If you don't have Node.js installed, install it from https://nodejs.org before running the MCP client scripts — the examples call `npx @brightdata/mcp`.
+If you don't have Node.js installed, install it from https://nodejs.org before running the local Node-based MCP server examples.
 
 ## How to run the example scripts
 
 All examples use `python-dotenv` to load `.env` from the current directory. Run them from this folder.
 
-- `single-mcp-server.py` — simple single-agent example:
+- `single-mcp-server.py` — simple single-agent example that demonstrates calling a local MCP server (or configure to spawn a remote one):
 
 ```powershell
 python single-mcp-server.py
 ```
 
-- `multi-mcp-server-with-supervisor.py` — supervisor example that coordinates multiple agents:
+- `multi-mcp-server-with-supervisor.py` — supervisor example that coordinates multiple agents through MCP:
 
 ```powershell
 python multi-mcp-server-with-supervisor.py
 ```
 
-- `stock-recommender.py` — (if present) run similarly:
+- `local-mcp-server.py` — a generic client demo that can connect to a local spawned Node MCP or a remote TCP MCP (demo mode):
 
 ```powershell
-python stock-recommender.py
+python local-mcp-server.py --mode local
 ```
 
 Notes:
 
-- The MCP client spawns `npx @brightdata/mcp` — this will download/run the MCP adapter via npm when invoked. Ensure network access and that `npx` is available.
-- The scripts call OpenAI models via API keys; monitor your usage and costs.
-- If you see issues spawning the MCP process, verify `npx @brightdata/mcp` works manually in a terminal first.
+Notes:
+- The examples are minimal and meant for local testing and learning.
+- The `ask_llm` tool calls OpenAI when `OPENAI_API_KEY` is available to the server process — set that in `.env` or pass it into the spawned process environment.
+- Monitor OpenAI usage and costs when running LLM calls.
 
 ## Troubleshooting
 
 - If Python imports fail, confirm you activated the virtualenv and installed `requirements.txt`.
-- If `npx` is not found, install Node.js and npm and reopen PowerShell.
-- For Bright Data authentication errors, double-check `BRIGHT_DATA_API_TOKEN` in your `.env`.
+- If Node is not found, install Node.js and reopen PowerShell.
+ 
 
 ## License / Notes
 
