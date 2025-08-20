@@ -1,34 +1,60 @@
-My MCP server scaffold
+My MCP server (TypeScript)
 
-This is a minimal, local MCP-like server that communicates over stdio using newline-delimited JSON. It's intended as a starting point for building your own MCP server for development or testing with the Python MultiServerMCPClient.
+This folder contains a minimal MCP-like server implemented in TypeScript. It communicates over stdio using newline-delimited JSON and exposes three demo tools: `echo`, `sum`, and `ask_llm`.
 
-Files:
-- `server.js` - Node.js server that implements a tiny JSON protocol (list_tools / call_tool / ping)
-- `test_client.py` - Python script that spawns `server.js` and demonstrates the request/response
-- `package.json` - metadata and start script
+Files
+- `src/server.ts` — TypeScript server source
+- `dist/server.js` — built server (after running `npm run build`)
+- `test_client.py`, `local-mcp-server.py` — small Python clients that demonstrate usage
+- `package.json` — scripts for building and running
 
-How to run (PowerShell):
+Quick start
 
-# from d:\project\mcp-learning\my-mcp-server
-node --version; npm --version
-node server.js
+1. Install dependencies (one time):
 
-In another PowerShell window (or use the included test client):
+```powershell
+cd d:\project\mcp-learning\my-mcp-server
+npm install
+```
 
-python test_client.py
+2. Build and run the server:
 
-Using with `MultiServerMCPClient` in Python
+```powershell
+npm run build
+node dist/server.js
+```
 
-You can point the client to spawn `node` with the server script as the argument. Example (pseudo-code):
+3. Run the Python client (from the repository root) to exercise the tools:
 
-client = MultiServerMCPClient({
-  "local": {
-    "command": "node",
-    "args": ["server.js"],
-    "transport": "stdio"
-  }
-})
+```powershell
+# run the demo client and point it to the built server
+python local-mcp-server.py --mode local --script d:\project\mcp-learning\my-mcp-server\dist\server.js
+```
+
+Development (live-run)
+
+Use `tsx` to run the TypeScript file directly (fast iteration):
+
+```powershell
+npm run dev
+# or
+npx tsx src/server.ts
+```
+
+Environment
+
+- Node 18+ is recommended (native fetch + modern runtime features).
+- If you want the `ask_llm` tool to call OpenAI, set `OPENAI_API_KEY` in the environment before spawning the server:
+
+```powershell
+$env:OPENAI_API_KEY = 'sk-...'
+node dist/server.js
+```
+
+Testing without OpenAI
+
+If you don't set `OPENAI_API_KEY`, `ask_llm` will return a `call_error` telling you the key is missing — useful for offline testing.
 
 Notes
-- This scaffold is intentionally tiny. A production MCP server will need to implement the full MCP protocol expected by your client (tool schemas, streaming, approvals, auth, error handling, etc.).
-- Use this to iterate locally and add features until your client integration works.
+
+- This server is intentionally tiny and intended for local development and learning. A production MCP server should add robust schemas, streaming support, authentication, and error handling.

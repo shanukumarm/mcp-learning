@@ -1,13 +1,21 @@
 {
   "name": "my-mcp-server",
   "version": "0.1.0",
-  "description": "Simple MCP-like server scaffold for local testing (stdio JSON protocol)",
-  "main": "server.js",
+  "description": "Simple MCP server for local",
+  "main": "dist/server.js",
   "scripts": {
-    "start": "node server.js"
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+  "dev": "tsx src/server.ts"
   },
   "engines": {
     "node": ">=18"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0",
+    "tsx": "^3.12.7"
+  }
 }
